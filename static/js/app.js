@@ -82,7 +82,7 @@ function initial_bubble_chart(selected_sample){
         marker: {size: selected_value, color: selected_otu},
         text: selected_labels
     };
-    var layout = {  width: 1200, height: 600, title: 'Marker Size and Color', showlegend: false};
+    var layout = {  width: 1200, height: 500, title: 'Marker Size and Color', showlegend: false};
     var data = [trace];
     Plotly.newPlot("bubble",data,layout);
 };
@@ -115,7 +115,7 @@ function initial_gauge_chart(selected_data){
         }
     };
     var data = [trace];
-    var layout = { width: 600, height: 600, margin: { t: 0, b: 0 } };
+    var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
     Plotly.newPlot('gauge', data, layout);
 };
 
