@@ -66,7 +66,7 @@ function initial_bar_chart(selected_sample){
     };
     
     var data = [trace1];
-    var layout = { title: "Bar chart"};
+    var layout = { width: 400, title: "Bar chart"};
     Plotly.newPlot("bar", data, layout);
 };
 
