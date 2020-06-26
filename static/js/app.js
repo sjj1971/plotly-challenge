@@ -15,8 +15,7 @@ d3.json("samples.json").then(function(data){
     //initial data for demographic based on default index:0
     demographic_data.html("");
     Object.entries(metadata[0]).forEach(function([key, value]){
-        var demo_info = demographic_data.append("ul");
-        demo_info.append("li").text(`${key}: ${value}`)
+        demographic_data.append("p").text(`${key}: ${value}`)
     });
 
     //initial chart based on default index:0
@@ -38,10 +37,9 @@ d3.json("samples.json").then(function(data){
         //update data for demographic based on selected index
         demographic_data.html("");
         Object.entries(metadata[selected_index]).forEach(function([key, value]){
-            var demo_info = demographic_data.append("ul");
-            demo_info.append("li").text(`${key}: ${value}`)
+            demographic_data.append("p").text(`${key}: ${value}`)
         });
-
+        
         //update chart based on selected index
 
         update_bar_chart(sample_data[selected_index]);
@@ -66,8 +64,9 @@ function initial_bar_chart(selected_sample){
     };
     
     var data = [trace1];
-    var layout = { width: 400, title: "Bar chart"};
-    Plotly.newPlot("bar", data, layout);
+    var layout = { title: `<b>10 largest OTUs of Test subject "ID-${selected_sample.id}"</b>`, xaxis:{title:"Number of Reads"}, yaxis:{title: "OTU ID"}};
+    var config = {responsive: true};
+    Plotly.newPlot("bar", data, layout, config);
 };
 
 function initial_bubble_chart(selected_sample){
@@ -82,9 +81,10 @@ function initial_bubble_chart(selected_sample){
         marker: {size: selected_value, color: selected_otu},
         text: selected_labels
     };
-    var layout = {  width: 1200, height: 500, title: 'Marker Size and Color', showlegend: false};
+    var layout = {width:"1200", title: `<b>Bubble Chart of OTUs of Test subject "ID-${selected_sample.id}"</b>`, showlegend: false,  xaxis:{title:"OTU ID"}, yaxis:{title: "Number of Reads"}};
     var data = [trace];
-    Plotly.newPlot("bubble",data,layout);
+    var config = {responsive: true};
+    Plotly.newPlot("bubble",data,layout,config);
 };
     
 function initial_gauge_chart(selected_data){
@@ -92,7 +92,7 @@ function initial_gauge_chart(selected_data){
     var trace = {
         type: "indicator",
         name: "Gauge Chart",
-		title: { text: "Scrubs per Weekly" },
+		title: { text: `<b>Belly Button Washing Frequency</b><br> Scrubs per Week`},
         visible: true,
 		mode: "gauge+number",
         value: selected_wfreq,
@@ -115,29 +115,36 @@ function initial_gauge_chart(selected_data){
         }
     };
     var data = [trace];
-    var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
-    Plotly.newPlot('gauge', data, layout);
+    var layout = { margin: { t: 0, b: 0 }};
+    var config = {responsive: true};
+    Plotly.newPlot('gauge', data, layout, config);
 };
 
 function update_bar_chart(selected_sample){
     var selected_otu = selected_sample.otu_ids.slice(0,10);
     var selected_value = selected_sample.sample_values.slice(0,10);
     var selected_labels = selected_sample.otu_labels.slice(0,10);
-    
+    var update = { title: `<b>10 largest OTUs of Test subject "ID-${selected_sample.id}"</b>`};
+//    var update = { title: `<b>10 largest OTUs of Test subject "ID-${selected_sample.id}"</b>`, xaxis:{title:"Number of Reads"}, yaxis:{title: "OTU ID"}};
+
     Plotly.restyle("bar","x",[selected_value.reverse()]);
     Plotly.restyle("bar","y",[selected_otu.map(data=>`OTU-${data}`).reverse()]);
     Plotly.restyle("bar","text",[selected_labels.reverse()]);
+    Plotly.relayout("bar",update)
 };
 
 function update_bubble_chart(selected_sample){
     var selected_otu = selected_sample.otu_ids;
     var selected_value = selected_sample.sample_values;
     var selected_labels = selected_sample.otu_labels;
+    var update = {title: `<b>Bubble Chart of OTUs of Test subject "ID-${selected_sample.id}"</b>`};
+//    var update = {width:"1200", title: `<b>Bubble Chart of OTUs of Test subject "ID-${selected_sample.id}"</b>`, showlegend: false,  xaxis:{title:"OTU ID"}, yaxis:{title: "Number of Reads"}};
     
     Plotly.restyle("bubble","x",[selected_otu]);
     Plotly.restyle("bubble","y",[selected_value]);
     Plotly.restyle("bubble","marker",[{size: selected_value, color: selected_otu}]),
     Plotly.restyle("bubble","text",[selected_labels]);
+    Plotly.relayout("bubble",update);
 
 };
     
